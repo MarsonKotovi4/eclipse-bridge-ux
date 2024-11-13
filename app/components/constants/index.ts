@@ -16,3 +16,6 @@ export const CONTRACT_ABI = [{
       stateMutability: 'payable',
       type: 'function',
 }];
+
+
+export const DEPOSIT_TX_GAS_COST = 113200
