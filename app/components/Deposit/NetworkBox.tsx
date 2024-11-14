@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useContext } from 'react';
 import './styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { WalletIcon } from "@/app/components/icons"
@@ -9,9 +9,9 @@ import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
 import Skeleton from 'react-loading-skeleton';
 import { truncateWalletAddress } from '@/lib/stringUtils';
 import { useWallets } from "@/app/hooks/useWallets";
-import useEthereumData from "@/lib/ethUtils";
 import { DEPOSIT_TX_GAS_COST } from '../constants';
 import { useNetwork } from '@/app/contexts/NetworkContext';
+import { EthereumDataContext } from '@/app/context';
 
 export interface NetworkBoxProps {
   imageSrc: string;
@@ -39,8 +39,7 @@ export const NetworkBox: React.FC<NetworkBoxProps> = ({
   setAmountEther
 }) => {
   const { userWallets, evmWallet, solWallet } = useWallets();
-  const { selectedOption } = useNetwork()
-  const { blockNumber, gasPrice, ethPrice } = useEthereumData(selectedOption);
+  const [gasPrice, ethPrice, blockNumber] = useContext(EthereumDataContext) ?? [null, null, null];
   const inputRef = useRef<HTMLInputElement>(null);
 
   function determineInputClass(): string {
@@ -174,7 +173,6 @@ export const NetworkBox: React.FC<NetworkBoxProps> = ({
                     setAmountEther(balanceEther - txGasFeeEther);
                     setTimeout(adjustInputWidth, 0)
                   }}
-                  // FIXME color
                   className="percentage-button disabled:text-gray-700 disabled:hover:text-gray-700 disabled:hover:cursor-not-allowed">
                     Max
                 </button>
